@@ -15,8 +15,8 @@ namespace Template
 		Rectangle paddle = new Rectangle(200, 570, 150, 20);
 
 		// Bollens starthastighet
-		int x_speed = 2;
-		int y_speed = 2;
+		int x_speed = 4;
+		int y_speed = 4;
 
 
 		public Game1()
@@ -62,38 +62,44 @@ namespace Template
 				paddle.X -= 5;
 			if (Keyboard.GetState().IsKeyDown(Keys.D))
 				paddle.X += 5;
-
 			if (Keyboard.GetState().IsKeyDown(Keys.Left))
 				paddle.X -= 5;
 			if (Keyboard.GetState().IsKeyDown(Keys.Right))
 				paddle.X += 5;
 
 
-
+            // Gör så att paddeln inte kan åka utanför skärmen.
 			if (paddle.X < 0)
 				paddle.X = 0;
-			if (paddle.X > Window.ClientBounds.Height - paddle.Width)
-				paddle.X = Window.ClientBounds.Height - +paddle.Width;
-			
+            if (paddle.X > Window.ClientBounds.Width - paddle.Width)
+                paddle.X = Window.ClientBounds.Width - paddle.Width;
 
 
-			// Gör så att bollen rör på sig
-			ball.X += x_speed;
+            // Gör så att bollen rör på sig
+            ball.X += x_speed;
 			ball.Y += y_speed;
 
 
-			if (ball.Y < 0 || ball.Y > Window.ClientBounds.Height - ball.Height)
-				y_speed *= -1;
-
-
+            // Gör så att bollen byter håll är den går ihop med paddeln
 			if (ball.Intersects(paddle))
 			{
 				y_speed *= -1;
 			}
 
 
+            // Gör så att bollen studsar mot sidorna och toppen
+            if (ball.X < 0 || ball.X > Window.ClientBounds.Width - ball.Width)
+                x_speed *= -1;
+            if (ball.Y < 0)
+                y_speed *= -1;
 
-			base.Update(gameTime);
+            // Avslutar spelet om bollen når nedre kant
+            if (ball.Y > Window.ClientBounds.Height - ball.Height)
+                Exit();
+
+
+
+            base.Update(gameTime);
 		}
 
 		protected override void Draw(GameTime gameTime)
